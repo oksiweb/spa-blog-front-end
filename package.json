@@ -22,10 +22,15 @@
     "react-markdown": "^8.0.6",
     "react-router-dom": "^6.9.0",
     "react-tooltip": "^5.10.4",
+    "react-transition-group": "^4.4.5",
+    "socket.io-client": "^4.6.1",
     "style-loader": "^3.3.2",
     "use-immer": "^0.8.1",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
+  },
+  "devDependencies": {
+    "dotenv-webpack": "^8.0.1"
   }
 }

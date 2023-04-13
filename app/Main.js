@@ -1,8 +1,9 @@
 import React, {useEffect, useReducer} from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
-Axios.defaults.baseURL = 'http://localhost:8080'
+Axios.defaults.baseURL = process.env.REACT_APP_SOCKET_SERVER;
 
 // My Components
 import Header from "./components/Header"
@@ -15,14 +16,15 @@ import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
 import Home from "./components/Home"
 import Profile from "./components/Profile"
-import ProfilePosts from "./components/ProfilePosts"
+import Chat from "./components/Chat"
 import EditPost from './components/EditPost'
 import NotFound from './components/NotFound'
 import Search from './components/Search'
 
 import { DispatchContext } from "./context/DispatchContext";
 import { StateContext } from "./context/StateContext";
-import { FLASH_MESSAGES, LOGIN, LOGOUT } from "./actions/types";
+import { FLASH_MESSAGES, LOGIN, LOGOUT, IS_CHAT_OPEN, IS_CHAT_CLOSE,
+  IS_SEARCH_CLOSE, IS_SEARCH_OPEN, COUNT_UNREAD_CHAT_MESSAGES, CLEAR_UNREAD_CHAT_MESSAGES } from "./actions/types";
 
 function Main() {
   const initialState = {
@@ -32,7 +34,10 @@ function Main() {
       username: localStorage.getItem("complexappUsername"),
       avatar: localStorage.getItem("complexappAvatar"),
       token: localStorage.getItem("complexappToken")
-    }
+    },
+    isSearchOpen: false,
+    isChatOpen: false,
+    unReadChatCount: 0
   }
 
   const reducer = (state, action) => {
@@ -55,6 +60,42 @@ function Main() {
         return {
           ...state,
           flashMessages: [...state.flashMessages, action.payload]
+        }
+      }
+      if(action.type === IS_SEARCH_OPEN){
+        return {
+          ...state,
+          isSearchOpen: true
+        }
+      }
+      if(action.type === IS_SEARCH_CLOSE){
+        return {
+          ...state,
+          isSearchOpen: false
+        }
+      }
+      if(action.type === IS_CHAT_OPEN){
+        return {
+          ...state,
+          isChatOpen: true
+        }
+      }
+      if(action.type === IS_CHAT_CLOSE){
+        return {
+          ...state,
+          isChatOpen: false
+        }
+      }
+      if(action.type === COUNT_UNREAD_CHAT_MESSAGES){
+        return {
+          ...state,
+          unReadChatCount: state.unReadChatCount + 1
+        }
+      }
+      if(action.type === CLEAR_UNREAD_CHAT_MESSAGES){
+        return {
+          ...state,
+          unReadChatCount: 0
         }
       }
   }
@@ -84,14 +125,17 @@ function Main() {
             <Route path="/" element={state.loggedIn ? <Home /> : <HomeGuest />} /> 
             <Route path="/about-us" element={<About />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/profile/:username" element={<Profile />} />
-            <Route path="/posts/:username" element={<ProfilePosts />} />
+            <Route path="/profile/:username/*" element={<Profile />} />
+          
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/post/:id/edit" element={<EditPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes> 
-          {/* <Search /> */}
+          <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
+            <Search />
+          </CSSTransition>
+            <Chat />
           <Footer />
         </BrowserRouter>
     </StateContext.Provider>

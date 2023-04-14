@@ -4,8 +4,8 @@ import LoadingDotsIcon from './LoadingDotsIcon';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Axios from 'axios';
 import ReactMarkdown from "react-markdown";
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css'
+import Tooltip  from 'react-tooltip';
+//import 'react-tooltip/dist/react-tooltip.css'
 import { StateContext } from "../context/StateContext";
 import { DispatchContext } from "../context/DispatchContext";
 import {FLASH_MESSAGES} from '../actions/types'

@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer} from "react"
+import React, {useEffect, useReducer, Suspense} from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CSSTransition } from "react-transition-group"
@@ -6,20 +6,21 @@ import Axios from "axios"
 Axios.defaults.baseURL = process.env.REACT_APP_SOCKET_SERVER;
 
 // My Components
+import LoadingDotsIcon from "./components/LoadingDotsIcon";
 import Header from "./components/Header"
 import About from "./components/About"
 import Terms from "./components/Terms"
 import HomeGuest from "./components/HomeGuest"
 import Footer from "./components/Footer"
-import CreatePost from "./components/CreatePost";
-import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
 import Home from "./components/Home"
 import Profile from "./components/Profile"
-import Chat from "./components/Chat"
+const CreatePost = React.lazy(() => import("./components/CreatePost"))
+const ViewSinglePost = React.lazy(() => import("./components/ViewSinglePost"))
+const Search = React.lazy(() => import("./components/Search"))
+const Chat = React.lazy(() => import("./components/Chat"))
 import EditPost from './components/EditPost'
 import NotFound from './components/NotFound'
-import Search from './components/Search'
 
 import { DispatchContext } from "./context/DispatchContext";
 import { StateContext } from "./context/StateContext";
@@ -140,6 +141,7 @@ function Main() {
         <BrowserRouter>
           <FlashMessages />
           <Header />
+          <Suspense fallback={<LoadingDotsIcon />}>
           <Routes > 
             <Route path="/" element={state.loggedIn ? <Home /> : <HomeGuest />} /> 
             <Route path="/about-us" element={<About />} />
@@ -151,10 +153,17 @@ function Main() {
             <Route path="/post/:id/edit" element={<EditPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes> 
+          </Suspense>
           <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
-            <Search />
+            <div className="search-overlay">
+              <Suspense fallback="">
+                <Search />
+              </Suspense>
+            </div>
           </CSSTransition>
-            <Chat />
+          <Suspense fallback="">
+            {state.loggedIn && <Chat />}
+          </Suspense>
           <Footer />
         </BrowserRouter>
     </StateContext.Provider>
@@ -162,9 +171,4 @@ function Main() {
   )
 }
 
-const root = ReactDOM.createRoot(document.querySelector("#app"))
-root.render(<Main />)
-
-if (module.hot) {
-  module.hot.accept()
-}
+export default Main;

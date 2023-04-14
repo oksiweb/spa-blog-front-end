@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const Dotenv = require("dotenv-webpack");
 
 module.exports = {
-  entry: "./app/Main.js",
+  entry: "./app/index.js",
   output: {
     publicPath: "/",
     path: path.resolve(__dirname, "app"),

@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from "react"
-import {  Link } from "react-router-dom";
 import {DispatchContext} from "../context/DispatchContext"
 import { IS_SEARCH_CLOSE } from "../actions/types";
 import { useImmer } from "use-immer"
@@ -74,7 +73,7 @@ function Search() {
   }
 
   return (
-    <div className="search-overlay">
+    <>
       <div className="search-overlay-top shadow-sm">
         <div className="container container--narrow">
           <label htmlFor="live-search-field" className="search-overlay-icon">
@@ -106,7 +105,7 @@ function Search() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

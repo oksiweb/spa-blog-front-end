@@ -5,10 +5,10 @@ import { IS_CHAT_CLOSE } from "../actions/types"
 import { useImmer } from "use-immer"
 import {Link} from 'react-router-dom'
 import io from "socket.io-client"
-const socket = io(process.env.REACT_APP_SOCKET_SERVER)
 import { COUNT_UNREAD_CHAT_MESSAGES, CLEAR_UNREAD_CHAT_MESSAGES } from "../actions/types";
 
 function Chat() {
+  const socket = useRef(null);
   const chatField = useRef(null);
   const chatLog = useRef(null);
   const appState = useContext(StateContext)
@@ -27,11 +27,13 @@ function Chat() {
   }, [appState.isChatOpen])
 
   useEffect(() => {
-    socket.on("chatFromServer", (message) => {
+    socket.current = io(process.env.REACT_APP_SOCKET_SERVER)
+    socket.current.on("chatFromServer", (message) => {
       setState((draft) => {
         draft.chatMessages.push(message)
       })
     })
+    return () => socket.current.disconnect()
   }, [])
 
   useEffect(() => {
@@ -51,7 +53,7 @@ function Chat() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send message to chat server
-    socket.emit("chatFromBrowser", { message: state.fieldValue, token: appState.user.token })
+    socket.current.emit("chatFromBrowser", { message: state.fieldValue, token: appState.user.token })
 
     setState(draft => {
       draft.chatMessages.push({ message: draft.fieldValue, username: appState.user.username, avatar: appState.user.avatar })

@@ -27,7 +27,7 @@ function Chat() {
   }, [appState.isChatOpen])
 
   useEffect(() => {
-    socket.current = io(process.env.REACT_APP_SOCKET_SERVER || "https://spa-blog-backend-api.onrender.com/")
+    socket.current = io(process.env.REACT_APP_SOCKET_SERVER || "https://spa-blog-backend-api.onrender.com")
     socket.current.on("chatFromServer", (message) => {
       setState((draft) => {
         draft.chatMessages.push(message)

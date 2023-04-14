@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
-Axios.defaults.baseURL = process.env.REACT_APP_SOCKET_SERVER;
+Axios.defaults.baseURL = process.env.REACT_APP_SOCKET_SERVER || "";
 
 // My Components
 import LoadingDotsIcon from "./components/LoadingDotsIcon";

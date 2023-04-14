@@ -72,7 +72,7 @@ if (currentTask == "webpackDev" || currentTask == "start") {
   }
 }
 
-if (currentTask == "build") {
+if (currentTask == "webpackBuild") {
   config.plugins.push(new CleanWebpackPlugin(), new RunAfterCompile())
   config.mode = "production"
   config.output = {
